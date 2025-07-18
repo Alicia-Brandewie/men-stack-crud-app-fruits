@@ -12,7 +12,10 @@ mongoose.connection.on ('connected',()  => {
     console.log(`connected to MongoDB ${mongoose.connection.name}`);
 }) //when DB is connected, similar to the listen method 
 
-// server.js
+//after connecting to DB above, bring route in with this "import"
+const Fruit = require('./models/fruit.js');
+
+
 
 // GET /
 app.get("/", async (req, res) => {
