@@ -8,11 +8,13 @@ const methodOverride = require("method-override");
 const morgan = require("morgan");
 
 
-mongoose.connect(process.env.MONGODB_URI);
 
 mongoose.connection.on('connected', () => {
     console.log(`connected to MongoDB ${mongoose.connection.name}`);
 }) //when DB is connected, similar to the listen method 
+
+mongoose.connect(process.env.MONGODB_URI);
+
 
 //after connecting to DB above, bring route in with this "import"
 const Fruit = require("./models/fruit.js");
@@ -45,7 +47,7 @@ app.get('/fruits/new', (req, res) => {
     res.render('fruits/new.ejs')
 });
 
-app.get("/fruits/:fruitId", (req, res) => {
+app.get("/fruits/:fruitId", async (req, res) => { // does adding async solve this eror? It should
     const foundFruit = await Fruit.findById(req.params.fruitId);
     res.render("fruits/show.ejs", { fruit: foundFruit });
 });
@@ -78,6 +80,15 @@ app.get('fruits/:fruitId/:fruitId', async (req, res) =>{
     });
 });
 
+app.put('/fruits/fruits:fruitId', async (req, res) =>{
+    if (req.body.isReadytoEat === 'on') { 
+        req.body.isReadytoEat = true; 
+    } else {
+        req.body.isReadytoEat = false;
+    }
+    await Fruit.findByIdAndUpdate(req.params.fruitId, req.body); //updates the fruit in the DB
+    res.redirect(`/fruits/${req.params.fruitId}`);
+});
 
 
 app.listen(3000, () => {
