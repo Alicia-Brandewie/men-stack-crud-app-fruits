@@ -24,6 +24,15 @@ app.get("/", async (req, res) => {
     res.render('index.ejs');
 });
 
+//GET
+app.get('/fruits', async (req, res) => {//added the async earlier than notes here
+    const allFruits = await Fruit.find({}); // allFruits = variable holding the data from the database call
+  //  console.log(allFruits);
+    res.render('fruits/index.ejs', {fruits:allFruits});
+  //  res.send("Welcome to the fruits index page!"); 
+    //res.send is functioning as console.log SO will change this logic later
+})
+
 
 //GET / fruits/new
 app.get('/fruits/new', (req, res) => {
@@ -38,7 +47,7 @@ app.post('/fruits', async (req, res) => {
         req.body.isReadytoEat = false;
     }
     await Fruit.create(req.body); // this line is the database transaction
-    res.redirect('fruits/new.ejs');
+    res.redirect('fruits');
 });
 
 
