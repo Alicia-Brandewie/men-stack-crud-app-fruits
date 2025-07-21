@@ -27,9 +27,9 @@ app.get("/", async (req, res) => {
 //GET
 app.get('/fruits', async (req, res) => {//added the async earlier than notes here
     const allFruits = await Fruit.find({}); // allFruits = variable holding the data from the database call
-  //  console.log(allFruits);
-    res.render('fruits/index.ejs', {fruits:allFruits});
-  //  res.send("Welcome to the fruits index page!"); 
+    //  console.log(allFruits);
+    res.render('fruits/index.ejs', { fruits: allFruits });
+    //  res.send("Welcome to the fruits index page!"); 
     //res.send is functioning as console.log SO will change this logic later
 })
 
@@ -38,6 +38,11 @@ app.get('/fruits', async (req, res) => {//added the async earlier than notes her
 app.get('/fruits/new', (req, res) => {
     res.render('fruits/new.ejs')
 })
+
+app.get("/fruits/:fruitId", (req, res) => {
+    const foundFruit = await Fruit.findById(req.params.fruitId);
+    res.render("fruits/show.ejs", { fruit: foundFruit });
+});
 
 //POST /fruits
 app.post('/fruits', async (req, res) => {
