@@ -1,10 +1,12 @@
 const dotenv = require('dotenv'); // bringing the functionality of dotenv
 dotenv.config(); // using dotenv to bring the variables from the .env file
 
+const app = express();
 const express = require('express');
 const mongoose = require('mongoose');
+const methodOverride = require("method-override");
+const morgan = require("morgan");
 
-const app = express();
 
 mongoose.connect(process.env.MONGODB_URI);
 
@@ -17,6 +19,10 @@ const Fruit = require("./models/fruit.js");
 
 //adding middleware
 app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride("_method")); // allows to override methods 
+//which essentially tricks our express app into thinking that we’ve made PUT and DELETE requests from the browser
+app.use(morgan("dev")); //a logging tool for our HTTP requests, providing valuable insights into application behavior.
+
 
 
 // GET /
@@ -31,13 +37,13 @@ app.get('/fruits', async (req, res) => {//added the async earlier than notes her
     res.render('fruits/index.ejs', { fruits: allFruits });
     //  res.send("Welcome to the fruits index page!"); 
     //res.send is functioning as console.log SO will change this logic later
-})
+});
 
 
 //GET / fruits/new
 app.get('/fruits/new', (req, res) => {
     res.render('fruits/new.ejs')
-})
+});
 
 app.get("/fruits/:fruitId", (req, res) => {
     const foundFruit = await Fruit.findById(req.params.fruitId);
@@ -54,6 +60,16 @@ app.post('/fruits', async (req, res) => {
     await Fruit.create(req.body); // this line is the database transaction
     res.redirect('fruits');
 });
+
+app.delete("/fruits/:fruitId", async (req, res) => {
+    await Fruit.findByIdAndDelete(req.params.fruitId);
+    res.redirect("/fruits");
+});
+
+
+
+
+
 
 
 app.listen(3000, () => {
