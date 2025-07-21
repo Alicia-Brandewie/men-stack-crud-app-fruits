@@ -61,6 +61,7 @@ app.post('/fruits', async (req, res) => {
     res.redirect('fruits');
 });
 
+//DELETE route
 app.delete("/fruits/:fruitId", async (req, res) => {
     await Fruit.findByIdAndDelete(req.params.fruitId);
     res.redirect("/fruits");
@@ -68,7 +69,14 @@ app.delete("/fruits/:fruitId", async (req, res) => {
 
 
 
-
+//EDIT route
+app.get('fruits/:fruitId/:fruitId', async (req, res) =>{
+    const foundFruit = await Fruit.findById(req.params.fruitId);
+    console.log(foundFruit);
+    res.render('fruits/edit.ejs', {
+        fruit: foundFruit,
+    });
+});
 
 
 
